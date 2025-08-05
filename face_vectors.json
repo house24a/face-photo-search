@@ -1,10 +1,10 @@
 [
   {
-    "photo_id": "photo_001.jpg",
-    "face_vector": [0.121, -0.032, ..., 0.014]
+    "photo_id": "test1.jpg",                
+    "face_vector": [0.1, 0.2, 0.3, 0.4, 0.5]
   },
   {
-    "photo_id": "photo_002.jpg",
-    "face_vector": [-0.012, 0.085, ..., -0.094]
+    "photo_id": "test2.jpg",
+    "face_vector": [0.6, 0.7, 0.8, 0.9, 1.0]
   }
 ]
