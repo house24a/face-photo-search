@@ -1,14 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import requests
 import numpy as np
 import json
-import os
 
 app = Flask(__name__)
 
-API_KEY = os.environ.get('hn-O6IAVGcpkjgMJAWaA-arbe1S7wfls')
-API_SECRET = os.environ.get('DvEDFA4EfF6FKe71kvAtlwZ1XtEQ-Huj')
+# 替换成你自己的 Face++ API Key 和 Secret
+API_KEY = 'hn-O6IAVGcpkjgMJAWaA-arbe1S7wfls'
+API_SECRET = 'DvEDFA4EfF6FKe71kvAtlwZ1XtEQ-Huj'
 
+# 载入特征库（face_vectors.json 必须存在）
 with open('face_vectors.json', 'r') as f:
     face_db = json.load(f)
 
@@ -23,8 +24,7 @@ def extract_feature(image_file):
     data = {
         "api_key": API_KEY,
         "api_secret": API_SECRET,
-        "return_landmark": 0,
-        "return_attributes": ""
+        "return_landmark": 0
     }
     response = requests.post(url, data=data, files=files)
     faces = response.json().get("faces", [])
@@ -32,6 +32,7 @@ def extract_feature(image_file):
         return None
     face_token = faces[0]["face_token"]
 
+    # 获取 embedding 向量
     search_url = "https://api-us.faceplusplus.com/facepp/v3/face/analyze"
     data = {
         "api_key": API_KEY,
@@ -42,6 +43,10 @@ def extract_feature(image_file):
     vec_response = requests.post(search_url, data=data)
     embedding = vec_response.json().get("faces", [{}])[0].get("attributes", {}).get("embedding", {}).get("vector")
     return embedding
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('upload.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
